@@ -1,10 +1,11 @@
 ---
 title: 'P&S-2022: Lab assignment 2'
-author: "Name1, Name2, Name3"
+author: "Prytula Matvii, Krasnianskyi Tymur, Vinnik Tetiana"
 output:
   html_document:
     df_print: paged
 ---
+
 
 ## General comments and instructions
 
@@ -61,18 +62,20 @@ $$
 #### First, we set the **id** of the team and define the probability $p$ and the generator and parity-check matrices $G$ and $H$
 
 ```{r}
-id <- 27
-
+# your team id number 
+                          ###
+id <- 27                  ### Change to the correct id!
+                          ###
 set.seed(id)
 p <- id/100
 # matrices G and H
 G <- matrix(c(1, 1, 1, 0, 0, 0, 0,
-		1, 0, 0, 1, 1, 0, 0,
-		0, 1, 0, 1, 0, 1, 0,
-		1, 1, 0, 1, 0, 0, 1), nrow = 4, byrow = TRUE)
+		          1, 0, 0, 1, 1, 0, 0,
+		          0, 1, 0, 1, 0, 1, 0,
+		          1, 1, 0, 1, 0, 0, 1), nrow = 4, byrow = TRUE)
 H <- t(matrix(c(1, 0, 1, 0, 1, 0, 1,
-		0, 1, 1, 0, 0, 1, 1,
-		0, 0, 0, 1, 1, 1, 1), nrow = 3, byrow = TRUE))
+		            0, 1, 1, 0, 0, 1, 1,
+		            0, 0, 0, 1, 1, 1, 1), nrow = 3, byrow = TRUE))
 # cat("The matrix G is: \n") 
 #G  
 #cat("The matrix H is: \n") 
@@ -85,25 +88,86 @@ H <- t(matrix(c(1, 0, 1, 0, 1, 0, 1,
 
 ```{r}
 # generate N messages
-
+N=100000
 message_generator <- function(N) {
   matrix(sample(c(0,1), 4*N, replace = TRUE), nrow = N)
 }  
-messages <- message_generator(10)
+messages <- message_generator(N)
 codewords <- (messages %*% G) %% 2
-codewords
 ```
 
-#### Generate random errors; do not forget that they occur with probability $p$! Next, generate the received messages
+#### Generate random errors; do not forget that they occur with probability \(p\)! Next, generate the received messages
+Nosify is a function which randomly changes the bit with probability $\frac{id}{100}$
+After that we apply this nosify() function to every bit of every message and get the codewords, which we could possibly receive.
 
 ```{r}
-#  errors <- ...
-#  received <-   
+nosify <- function(bit){
+  if(runif(1)<=p){
+    bit <- 1-bit
+  }
+  return(bit)
+}
+errors <- function(df){
+  return(apply(df,c(1, 2),nosify))
+}
+received <- errors(codewords)
 ```
 
-The next steps include detecting the errors in the received messages, correcting them, and then decoding the obtained messages. After this, you can continue with calculating all the quantities of interest
+3. Count the number k = 0,1,2,3,4 of errors while transmitting a 4-digit binary message
+```{r}
+error_count = rowSums((received[, c(3, 5, 6, 7)] + messages) %%2)
+barplot(table(error_count), main="number of messages with k=0,1,2,3,4 wrongly transmitted bits", xlab="wrong bits in message", ylab="number of messages")
+
+```
+Since x-axis is not dense, it's hard to detect distribution simply by its histogram. But at the same time it reminds binomial distribution, and it's actually true. Because, if we want exactly k bits to be wrong, we have to choose these k bits via binomial coefficient and then multiply by probabilities that those bits are wrong, while others are right. $\binom{4}{k}*(1-p)^k*p^{4-k}$ for k=0,1,2,3,4
+------------------------
+The next steps include detecting the errors in the received messages, correcting them, and then decoding the obtained messages. After this, you can continue with calculating all the quantities of interest.
+Multiply each message by parity-check matrix to see whether the errors are present. Since we take $\oplus$ operation between bits, it's the same as finding sum by modulo 2. After that, the result matrix we get for every message will be the number of bit, which was transmitted wrongly(Notice, that we can't tell whether only one error happend. Therefore, we change the bit, which index we got, and compare to the original message)
+``` {r}
+res <- (received %*% H)%%2
+idx <- apply(res, 1, function(x) x[1] + x[2]*2 + x[3]*4)
+```
+
+``` {r}
+for (i in seq_along(idx)){
+  if(idx[i]!=0){
+    received[i,][idx[i]]=1-received[i,][idx[i]]
+  }
+}
+final = received[, c(3, 5, 6, 7)]
+```
+``` {r}
+counter = 0
+
+for (rows in 1:nrow(final)){
+  if(final[rows, 1] == messages[rows,1]&(final[rows, 2] == messages[rows, 2]) & 
+     (final[rows, 3] == messages[rows, 3]) &(final[rows, 4] == messages[rows, 4]) ){
+    counter = counter + 1
+  }
+}
+p_hat = counter/N
+p_hat
+
+p_star = (1-p)**7+7*p*(1-p)**6
+p_star
+``` 
+
+In order for message to be decoded right, it has to be transmitted unchanged, or only one bit has to be wrongly transmitted. In this case, hamming code will cope with changing it to its original state. Therefore, we calculate the probability of all the 7 bits remaining unchanged as $(1-p)^7$ and add the probability that exactly one bit will be changed suring transmitting $7*p*(1-p)^6$. For large N it converges to theoretical c.d.f. as it is stated after definition of empirical c.d.f. $\forall t, \hat{F}_{x, n}(t) \rightarrow F(t)$ with probability 1, i.e., the empirical c.d.f. almpst surely converges to theoretical c.d.f. as $n \rightarrow \infty$.\
+$\hat{p}$ is our empirical cdf, while $p^*$ is theoretical.
+
+2. According to subtask 2, we have to find the following: $P\{p^*-\varepsilon\le \hat{p}\le p^* + \varepsilon\} = 1-2*P\{\hat{p}\ge p^* + \varepsilon\} = 1- 2*(1-P\{\hat{p}\le p^*+\varepsilon\}) = 2*P\{\hat{p}\le p^*+\varepsilon\} -1 = 2*P\{\hat{p} - p^* \le \varepsilon\} -1 = 2*P\{(\hat{p} - p^*)*\frac{\sqrt{n}}{\sigma} \le \varepsilon*\frac{\sqrt{n}}{\sigma}\} -1 = 2*P\{\frac{S_n - \mu n}{\sigma \sqrt{n}} \le \varepsilon*\frac{\sqrt{n}}{\sigma}\} - 1  = 2*\Phi{(\varepsilon*\frac{\sqrt{n}}{\sigma})} -1 \ge 0.95$. \
+$(p^*=\mu, \hat{p} = \frac{X_1 + X_2 + ...}{n})$
+Therefore,
+$\Phi{(\varepsilon*\frac{\sqrt{n}}{\sigma})} \ge \frac{1.95}{2} = 0.975$ \
+Thus, $\varepsilon * \frac{\sqrt{n}}{\sigma}=1.95$
+$\sigma^2 = p^**(1-p^*) \rightarrow \sigma = 0.48917$
+$\varepsilon = \frac{1.95*\sigma}{\sqrt{n}} \le 0.03$
+$\sqrt{n} \ge \frac{1.95*0.48917}{0.03} \rightarrow n \approxeq 1010.9888 \approx 1011$
+      
+
 
 **Do not forget to include several sentences summarizing your work and the conclusions you have made!**
+This task has shown experimentally the application of Central Limit Theorem, and what "N" can be considered as big enough, for example. It can be clearly seen as experimental cdf approaches the one we derived theoretically
 
 ### Task 2.
 
