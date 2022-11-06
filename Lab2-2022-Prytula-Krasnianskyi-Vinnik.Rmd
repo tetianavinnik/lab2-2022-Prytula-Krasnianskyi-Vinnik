@@ -204,7 +204,7 @@ sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
 #### Next, calculate the parameters of the standard normal approximation
 
 ```{r}
-mu <- 0       # change this!
+mu <- mean(sam)       # change this!
 sigma <- 1    # change this!
 ```
 
@@ -390,3 +390,16 @@ prob
 ```
 
 *Comment*: as one can see, probabilities can be bounded using different approximations. We used Markov inequality, Chernoff bound and Central Limit Theorem. We can conclude that Chernoff and CLT gives us more precise bounds. But all of them give quite close results, which are satisfy desired probability.
+
+
+```{r}
+clicks <- rep(0, K)
+for (i in 1:K) {
+  clicks[i] <- sum(rexp(100, rate = 37*2))
+}
+prob <- length(clicks[clicks>1]) / length(clicks)
+prob
+```
+
+*Comment*: as one can see, probabilities can be bounded using different approximations. We used Markov inequality, Chernoff bound and Central Limit Theorem. We can conclude that Chernoff and CLT gives us more precise bounds. But all of them give quite close results, which are satisfy desired probability.
+>>>>>>> a6a1dccea19815ec4ea4f0c327eac2d33dfb77b8
