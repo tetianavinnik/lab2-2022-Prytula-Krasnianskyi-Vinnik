@@ -1,6 +1,6 @@
 ---
 title: 'P&S-2022: Lab assignment 2'
-author: "Name1, Name2, Name3"
+author: "Prytula, Krasnyanskiy, Vinnik"
 output:
   html_document:
     df_print: paged
@@ -127,7 +127,7 @@ The next steps include detecting the errors in the received messages, correcting
     -   calculate the number of elements of the sample which are less than critical value ($8 \times 10^8$) and calculate the empirical probability; comment whether it is close to the desired level $0.95$
 
 ```{r}
-lambda <- 1  # change this!
+lambda <- 37  # change this!
 N <- 10     # change this!
 mu <- N * lambda
 K <- 1e3
@@ -139,7 +139,7 @@ sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
 #### Next, calculate the parameters of the standard normal approximation
 
 ```{r}
-mu <- 0       # change this!
+mu <- mean(sam)       # change this!
 sigma <- 1    # change this!
 ```
 
@@ -179,8 +179,6 @@ curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
         S - time of 100 clicks, S \> 60\
 
     -   obtain the theoretical bounds on $N$ using the Markov inequality, Chernoff bound and Central Limit Theorem and compare the results;
-
-        -   $$P(\dfrac{S-\dfrac{100}{37*N}}{\dfrac{10}{37*N}}\leq{\dfrac{1-\dfrac{100}{37*N}}{10}}37N) -> \phi{(3.7N-10)} \geq 0.95 -> 3,7N-10 \geq 1- \phi{(0.95)} -> N\geq2,74894 $$\
 
     -   with the predicted $N$ and thus $\nu$, simulate the realization $x_1,x_2,\dots,x_{100}$ of the $X_i$ and of the sum $S = X_1 + \cdots + X_{100}$;\
 
@@ -262,7 +260,7 @@ Results: as we can see ecdf and cdf become closer(their difference becomes small
 
 $$
 nu = 37*N \\ E(S) = 100/(37*N) \\
-P(S>1) = 0.95 = 100/(37*N) \\ N\leq2.8449502134\approx2.845
+P(S>1) \leq 0.95 = 100/(37*N) \\ N\leq2.8449502134\approx2.845
 $$
 
 **Chernoff:**
