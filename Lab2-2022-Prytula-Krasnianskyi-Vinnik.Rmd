@@ -4,32 +4,62 @@ author: "Prytula Matvii, Krasnianskyi Tymur, Vinnik Tetiana"
 output:
   html_document:
     df_print: paged
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
-
 
 ## General comments and instructions
 
--   Complete solution will give you $\bf 4$ points (out of 100 total). Submission deadline is **23:59 of 06 November 2022**\
--   The report must be prepared as an *R notebook*; you must submit to **cms** both the source *R notebook* **and** the generated html file\
--   At the beginning of the notebook, provide a work-breakdown structure estimating efforts of each team member\
+-   Complete solution will give you $\bf 4$ points (out of 100 total).
+    Submission deadline is **23:59 of 06 November 2022**\
+-   The report must be prepared as an *R notebook*; you must submit to
+    **cms** both the source *R notebook* **and** the generated html
+    file\
+-   At the beginning of the notebook, provide a work-breakdown structure
+    estimating efforts of each team member\
 -   For each task, include
-    -   problem formulation and discussion (what is a reasonable answer to discuss);\
-    -   the corresponding $\mathbf{R}$ code with comments (usually it is just a couple of lines long);\
-    -   the statistics obtained (like sample mean or anything else you use to complete the task) as well as histograms etc to illustrate your findings;\
-    -   justification of your solution (e.g. refer to the corresponding theorems from probability theory);\
-    -   conclusions (e.g. how reliable your answer is, does it agree with common sense expectations etc)\
--   The **team id number** referred to in tasks is the **two-digit** ordinal number of your team on the list. Include the line **set.seed(team id number)** at the beginning of your code to make your calculations reproducible. Also observe that the answers **do** depend on this number!\
--   Take into account that not complying with these instructions may result in point deduction regardless of whether or not your implementation is correct.
+    -   problem formulation and discussion (what is a reasonable answer
+        to discuss);\
+    -   the corresponding $\mathbf{R}$ code with comments (usually it is
+        just a couple of lines long);\
+    -   the statistics obtained (like sample mean or anything else you
+        use to complete the task) as well as histograms etc to
+        illustrate your findings;\
+    -   justification of your solution (e.g. refer to the corresponding
+        theorems from probability theory);\
+    -   conclusions (e.g. how reliable your answer is, does it agree
+        with common sense expectations etc)\
+-   The **team id number** referred to in tasks is the **two-digit**
+    ordinal number of your team on the list. Include the line
+    **set.seed(team id number)** at the beginning of your code to make
+    your calculations reproducible. Also observe that the answers **do**
+    depend on this number!\
+-   Take into account that not complying with these instructions may
+    result in point deduction regardless of whether or not your
+    implementation is correct.
 
 ### Task 1
 
 #### In this task, we discuss the $[7,4]$ Hamming code and investigate its reliability. That coding system can correct single errors in the transmission of $4$-bit messages and proceeds as follows:
 
--   given a message $\mathbf{m} = (a_1 a_2 a_3 a_4)$, we first encode it to a $7$-bit *codeword* $\mathbf{c} = \mathbf{m}G = (x_1 x_2 x_3 x_4 x_5 x_6 x_7)$, where $G$ is a $4\times 7$ *generator* matrix\
--   the codeword $\mathbf{c}$ is transmitted, and $\mathbf{r}$ is the received message\
--   $\mathbf{r}$ is checked for errors by calculating the *syndrome vector* $\mathbf{z} := \mathbf{r} H$, for a $7 \times 3$ *parity-check* matrix $H$\
--   if a single error has occurred in $\mathbf{r}$, then the binary $\mathbf{z} = (z_1 z_2 z_3)$ identifies the wrong bit no. $z_1 + 2 z_2 + 4z_3$; thus $(0 0 0)$ shows there was no error (or more than one), while $(1 1 0 )$ means the third bit (or more than one) got corrupted\
--   if the error was identified, then we flip the corresponding bit in $\mathbf{r}$ to get the corrected $\mathbf{r}^* = (r_1 r_2 r_3 r_4 r_5 r_6 r_7)$;\
+-   given a message $\mathbf{m} = (a_1 a_2 a_3 a_4)$, we first encode it
+    to a $7$-bit *codeword*
+    $\mathbf{c} = \mathbf{m}G = (x_1 x_2 x_3 x_4 x_5 x_6 x_7)$, where
+    $G$ is a $4\times 7$ *generator* matrix\
+-   the codeword $\mathbf{c}$ is transmitted, and $\mathbf{r}$ is the
+    received message\
+-   $\mathbf{r}$ is checked for errors by calculating the *syndrome
+    vector* $\mathbf{z} := \mathbf{r} H$, for a $7 \times 3$
+    *parity-check* matrix $H$\
+-   if a single error has occurred in $\mathbf{r}$, then the binary
+    $\mathbf{z} = (z_1 z_2 z_3)$ identifies the wrong bit no.
+    $z_1 + 2 z_2 + 4z_3$; thus $(0 0 0)$ shows there was no error (or
+    more than one), while $(1 1 0 )$ means the third bit (or more than
+    one) got corrupted\
+-   if the error was identified, then we flip the corresponding bit in
+    $\mathbf{r}$ to get the corrected
+    $\mathbf{r}^* = (r_1 r_2 r_3 r_4 r_5 r_6 r_7)$;\
 -   the decoded message is then $\mathbf{m}^*:= (r_3r_5r_6r_7)$.
 
 #### The **generator** matrix $G$ and the **parity-check** matrix $H$ are given by
@@ -52,10 +82,19 @@ $$
 
 #### Assume that each bit in the transmission $\mathbf{c} \mapsto \mathbf{r}$ gets corrupted independently of the others with probability $p = \mathtt{id}/100$, where $\mathtt{id}$ is your team number. Your task is the following one.
 
-1.  Simulate the encoding-transmission-decoding process $N$ times and find the estimate $\hat p$ of the probability $p^*$ of correct transmission of a single message $\mathbf{m}$. Comment why, for large $N$, $\hat p$ is expected to be close to $p^*$.\
-2.  By estimating the standard deviation of the corresponding indicator of success by the standard error of your sample and using the CLT, predict the \emph{confidence} interval $(p^*-\varepsilon, p^* + \varepsilon)$, in which the estimate $\hat p$ falls with probability at least $0.95$.\
+1.  Simulate the encoding-transmission-decoding process $N$ times and
+    find the estimate $\hat p$ of the probability $p^*$ of correct
+    transmission of a single message $\mathbf{m}$. Comment why, for
+    large $N$, $\hat p$ is expected to be close to $p^*$.\
+2.  By estimating the standard deviation of the corresponding indicator
+    of success by the standard error of your sample and using the CLT,
+    predict the \emph{confidence} interval
+    $(p^*-\varepsilon, p^* + \varepsilon)$, in which the estimate
+    $\hat p$ falls with probability at least $0.95$.\
 3.  What choice of $N$ guarantees that $\varepsilon \le 0.03$?\
-4.  Draw the histogram of the number $k = 0,1,2,3,4$ of errors while transmitting a $4$-digit binary message. Do you think it is one of the known distributions?
+4.  Draw the histogram of the number $k = 0,1,2,3,4$ of errors while
+    transmitting a $4$-digit binary message. Do you think it is one of
+    the known distributions?
 
 #### You can (but do not have to) use the chunks we prepared for you
 
@@ -96,9 +135,11 @@ messages <- message_generator(N)
 codewords <- (messages %*% G) %% 2
 ```
 
-#### Generate random errors; do not forget that they occur with probability \(p\)! Next, generate the received messages
-Nosify is a function which randomly changes the bit with probability $\frac{id}{100}$
-After that we apply this nosify() function to every bit of every message and get the codewords, which we could possibly receive.
+#### Generate random errors; do not forget that they occur with probability $p$! Next, generate the received messages
+
+Nosify is a function which randomly changes the bit with probability
+$\frac{id}{100}$ After that we apply this nosify() function to every bit
+of every message and get the codewords, which we could possibly receive.
 
 ```{r}
 nosify <- function(bit){
@@ -113,22 +154,34 @@ errors <- function(df){
 received <- errors(codewords)
 ```
 
-3. Count the number k = 0,1,2,3,4 of errors while transmitting a 4-digit binary message
+3.  Count the number k = 0,1,2,3,4 of errors while transmitting a
+    4-digit binary message
+
 ```{r}
 error_count = rowSums((received[, c(3, 5, 6, 7)] + messages) %%2)
 barplot(table(error_count), main="number of messages with k=0,1,2,3,4 wrongly transmitted bits", xlab="wrong bits in message", ylab="number of messages")
 
 ```
-Since x-axis is not dense, it's hard to detect distribution simply by its histogram. But at the same time it reminds binomial distribution, and it's actually true. Because, if we want exactly k bits to be wrong, we have to choose these k bits via binomial coefficient and then multiply by probabilities that those bits are wrong, while others are right. $\binom{4}{k}*(1-p)^k*p^{4-k}$ for k=0,1,2,3,4
-------------------------
-The next steps include detecting the errors in the received messages, correcting them, and then decoding the obtained messages. After this, you can continue with calculating all the quantities of interest.
-Multiply each message by parity-check matrix to see whether the errors are present. Since we take $\oplus$ operation between bits, it's the same as finding sum by modulo 2. After that, the result matrix we get for every message will be the number of bit, which was transmitted wrongly(Notice, that we can't tell whether only one error happend. Therefore, we change the bit, which index we got, and compare to the original message)
-``` {r}
+
+## Since x-axis is not dense, it's hard to detect distribution simply by its histogram. But at the same time it reminds binomial distribution, and it's actually true. Because, if we want exactly k bits to be wrong, we have to choose these k bits via binomial coefficient and then multiply by probabilities that those bits are wrong, while others are right. $\binom{4}{k}*(1-p)^k*p^{4-k}$ for k=0,1,2,3,4
+
+The next steps include detecting the errors in the received messages,
+correcting them, and then decoding the obtained messages. After this,
+you can continue with calculating all the quantities of interest.
+Multiply each message by parity-check matrix to see whether the errors
+are present. Since we take $\oplus$ operation between bits, it's the
+same as finding sum by modulo 2. After that, the result matrix we get
+for every message will be the number of bit, which was transmitted
+wrongly(Notice, that we can't tell whether only one error happened.
+Therefore, we change the bit, which index we got, and compare to the
+original message)
+
+```{r}
 res <- (received %*% H)%%2
 idx <- apply(res, 1, function(x) x[1] + x[2]*2 + x[3]*4)
 ```
 
-``` {r}
+```{r}
 for (i in seq_along(idx)){
   if(idx[i]!=0){
     received[i,][idx[i]]=1-received[i,][idx[i]]
@@ -136,7 +189,8 @@ for (i in seq_along(idx)){
 }
 final = received[, c(3, 5, 6, 7)]
 ```
-``` {r}
+
+```{r}
 counter = 0
 
 for (rows in 1:nrow(final)){
@@ -150,25 +204,34 @@ p_hat
 
 p_star = (1-p)**7+7*p*(1-p)**6
 p_star
-``` 
+```
 
-In order for message to be decoded right, it has to be transmitted unchanged, or only one bit has to be wrongly transmitted. In this case, hamming code will cope with changing it to its original state. Therefore, we calculate the probability of all the 7 bits remaining unchanged as $(1-p)^7$ and add the probability that exactly one bit will be changed suring transmitting $7*p*(1-p)^6$. For large N it converges to theoretical c.d.f. as it is stated after definition of empirical c.d.f. $\forall t, \hat{F}_{x, n}(t) \rightarrow F(t)$ with probability 1, i.e., the empirical c.d.f. almpst surely converges to theoretical c.d.f. as $n \rightarrow \infty$.\
+In order for message to be decoded right, it has to be transmitted
+unchanged, or only one bit has to be wrongly transmitted. In this case,
+hamming code will cope with changing it to its original state.
+Therefore, we calculate the probability of all the 7 bits remaining
+unchanged as $(1-p)^7$ and add the probability that exactly one bit will
+be changed suring transmitting $7*p*(1-p)^6$. For large N it converges
+to theoretical c.d.f. as it is stated after definition of empirical
+c.d.f. $\forall t, \hat{F}_{x, n}(t) \rightarrow F(t)$ with probability
+1, i.e., the empirical c.d.f. almpst surely converges to theoretical
+c.d.f. as $n \rightarrow \infty$.\
 $\hat{p}$ is our empirical cdf, while $p^*$ is theoretical.
 
+2.  According to subtask 2, we have to find the following:
+    $P\{p^*-\varepsilon\le \hat{p}\le p^* + \varepsilon\} = 1-2*P\{\hat{p}\ge p^* + \varepsilon\} = 1- 2*(1-P\{\hat{p}\le p^*+\varepsilon\}) = 2*P\{\hat{p}\le p^*+\varepsilon\} -1 = 2*P\{\hat{p} - p^* \le \varepsilon\} -1 = 2*P\{(\hat{p} - p^*)*\frac{\sqrt{n}}{\sigma} \le \varepsilon*\frac{\sqrt{n}}{\sigma}\} -1 = 2*P\{\frac{S_n - \mu n}{\sigma \sqrt{n}} \le \varepsilon*\frac{\sqrt{n}}{\sigma}\} - 1 = 2*\Phi{(\varepsilon*\frac{\sqrt{n}}{\sigma})} -1 \ge 0.95$.\
+    $(p^*=\mu, \hat{p} = \frac{X_1 + X_2 + ...}{n})$ Therefore,
+    $\Phi{(\varepsilon*\frac{\sqrt{n}}{\sigma})} \ge \frac{1.95}{2} = 0.975$\
+    Thus, $\varepsilon * \frac{\sqrt{n}}{\sigma}=1.95$
+    $\sigma^2 = p^**(1-p^*) \rightarrow \sigma = 0.48917$
+    $\varepsilon = \frac{1.95*\sigma}{\sqrt{n}} \le 0.03$
+    $\sqrt{n} \ge \frac{1.95*0.48917}{0.03} \rightarrow n \approxeq 1010.9888 \approx 1011$
 
-2. According to subtask 2, we have to find the following: $P\{p^*-\varepsilon\le \hat{p}\le p^* + \varepsilon\} = 1-2*P\{\hat{p}\ge p^* + \varepsilon\} = 1- 2*(1-P\{\hat{p}\le p^*+\varepsilon\}) = 2*P\{\hat{p}\le p^*+\varepsilon\} -1 = 2*P\{\hat{p} - p^* \le \varepsilon\} -1 = 2*P\{(\hat{p} - p^*)*\frac{\sqrt{n}}{\sigma} \le \varepsilon*\frac{\sqrt{n}}{\sigma}\} -1 = 2*P\{\frac{S_n - \mu n}{\sigma \sqrt{n}} \le \varepsilon*\frac{\sqrt{n}}{\sigma}\} - 1  = 2*\Phi{(\varepsilon*\frac{\sqrt{n}}{\sigma})} -1 \ge 0.95$. \
-$(p^*=\mu, \hat{p} = \frac{X_1 + X_2 + ...}{n})$
-Therefore,
-$\Phi{(\varepsilon*\frac{\sqrt{n}}{\sigma})} \ge \frac{1.95}{2} = 0.975$ \
-Thus, $\varepsilon * \frac{\sqrt{n}}{\sigma}=1.95$
-$\sigma^2 = p^**(1-p^*) \rightarrow \sigma = 0.48917$
-$\varepsilon = \frac{1.95*\sigma}{\sqrt{n}} \le 0.03$
-$\sqrt{n} \ge \frac{1.95*0.48917}{0.03} \rightarrow n \approxeq 1010.9888 \approx 1011$
-      
-
-
-**Do not forget to include several sentences summarizing your work and the conclusions you have made!**
-This task has shown experimentally the application of Central Limit Theorem, and what "N" can be considered as big enough, for example. It can be clearly seen as experimental cdf approaches the one we derived theoretically
+**Do not forget to include several sentences summarizing your work and
+the conclusions you have made!** This task has shown experimentally the
+application of Central Limit Theorem, and what "N" can be considered as
+big enough, for example. It can be clearly seen as experimental cdf
+approaches the one we derived theoretically
 
 ### Task 2.
 
@@ -178,34 +241,54 @@ This task has shown experimentally the application of Central Limit Theorem, and
 
 #### Assume that a medical laboratory receives $n$ samples of radioactive element ${{}^{137}}\mathtt{Cs}$ (used in radiotherapy) with half-life period $T = 30.1$ years and mass $m = \mathtt{team\, id \,number} \times 10^{-6}$ g each. Denote by $X_1,X_2,\dots,X_n$ the **i.i.d. r.v.**'s counting the number of decays in sample $i$ in one second.
 
-1.  Specify the parameter of the Poisson distribution of $X_i$ (you'll need the atomic mass of *Cesium-137*)\
-2.  Show that the distribution of the sample means of $X_1,\dots,X_n$ gets very close to a normal one as $n$ becomes large and identify that normal distribution. To this end,
-    -   simulate the realization $x_1,x_2,\dots,x_n$ of the $X_i$ and calculate the sample mean $s=\overline{\mathbf{x}}$;
-    -   repeat this $K$ times to get the sample $\mathbf{s}=(s_1,\dots,s_K)$ of means and form the empirical cumulative distribution function $\hat F_{\mathbf{s}}$ of $\mathbf{s}$;
-    -   identify $\mu$ and $\sigma^2$ such that the \textbf{c.d.f.} $F$ of $\mathscr{N}(\mu,\sigma^2)$ is close to the \textbf{e.c.d.f.} $\hat F_{\mathbf{s}}$ and plot both **c.d.f.**'s on one graph to visualize their proximity (use the proper scales!);
-    -   calculate the maximal difference between the two \textbf{c.d.f.}'s;
-    -   consider cases $n = 5$, $n = 10$, $n=50$ and comment on the results.\
-3.  Calculate the largest possible value of $n$, for which the total number of decays in one second is less than $8 \times 10^8$ with probability at least $0.95$. To this end,
-    -   obtain the theoretical bound on $n$ using Markov inequality, Chernoff bound and Central Limit Theorem, and compare the results;\
-    -   simulate the realization $x_1,x_2,\dots,x_n$ of the $X_i$ and calculate the sum $s=x_1 + \cdots +x_n$;
-    -   repeat this $K$ times to get the sample $\mathbf{s}=(s_1,\dots,s_K)$ of sums;
-    -   calculate the number of elements of the sample which are less than critical value ($8 \times 10^8$) and calculate the empirical probability; comment whether it is close to the desired level $0.95$
-
+1.  Specify the parameter of the Poisson distribution of $X_i$ (you'll
+    need the atomic mass of *Cesium-137*)\
+2.  Show that the distribution of the sample means of $X_1,\dots,X_n$
+    gets very close to a normal one as $n$ becomes large and identify
+    that normal distribution. To this end,
+    -   simulate the realization $x_1,x_2,\dots,x_n$ of the $X_i$ and
+        calculate the sample mean $s=\overline{\mathbf{x}}$;
+    -   repeat this $K$ times to get the sample
+        $\mathbf{s}=(s_1,\dots,s_K)$ of means and form the empirical
+        cumulative distribution function $\hat F_{\mathbf{s}}$ of
+        $\mathbf{s}$;
+    -   identify $\mu$ and $\sigma^2$ such that the \textbf{c.d.f.} $F$
+        of $\mathscr{N}(\mu,\sigma^2)$ is close to the \textbf{e.c.d.f.}
+        $\hat F_{\mathbf{s}}$ and plot both **c.d.f.**'s on one graph to
+        visualize their proximity (use the proper scales!);
+    -   calculate the maximal difference between the two
+        \textbf{c.d.f.}'s;
+    -   consider cases $n = 5$, $n = 10$, $n=50$ and comment on the
+        results.\
+3.  Calculate the largest possible value of $n$, for which the total
+    number of decays in one second is less than $8 \times 10^8$ with
+    probability at least $0.95$. To this end,
+    -   obtain the theoretical bound on $n$ using Markov inequality,
+        Chernoff bound and Central Limit Theorem, and compare the
+        results;\
+    -   simulate the realization $x_1,x_2,\dots,x_n$ of the $X_i$ and
+        calculate the sum $s=x_1 + \cdots +x_n$;
+    -   repeat this $K$ times to get the sample
+        $\mathbf{s}=(s_1,\dots,s_K)$ of sums;
+    -   calculate the number of elements of the sample which are less
+        than critical value ($8 \times 10^8$) and calculate the
+        empirical probability; comment whether it is close to the
+        desired level $0.95$
 ```{r}
-lambda <- 1  # change this!
-N <- 10     # change this!
-mu <- N * lambda
+T_hl <- 949864255
+lambda <- log(2)/T_hl
+N <- 1.18248175182e17
+mu1 <- N * lambda
 K <- 1e3
 n <- 5
-sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
-
+sample_means <- colMeans(matrix(rpois(n*K, lambda = mu1), nrow=n))
 ```
 
 #### Next, calculate the parameters of the standard normal approximation
 
 ```{r}
-mu <- mean(sam)       # change this!
-sigma <- 1    # change this!
+mu <- mean(sample_means)    
+sigma <- sqrt(var(sample_means))
 ```
 
 #### We can now plot ecdf and cdf
@@ -217,14 +300,78 @@ plot(Fs,
      xlim = xlims, 
      ylim = c(0,1),
      col = "blue",
-     lwd = 2,
+     lwd = 1,
      main = "Comparison of ecdf and cdf")
 curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
 ```
 
-**Next, proceed with all the remaining steps**
+#### Max difference between ecdf and cdf
 
-**Do not forget to include several sentences summarizing your work and the conclusions you have made!**
+```{r}
+print("Max difference:")
+x <- seq(min(sample_means), max(sample_means), by = .01)
+max(abs(ecdf(sample_means)(x)-pnorm(x, mean = mu, sd = sigma)))
+```
+
+#### Considering different n cases:
+
+If n := 5, Max difference is 0.01938121;
+
+If n := 10, Max difference is 0.01882709;
+
+If n := 50, Max difference is 0.01593786;
+
+Thus, as n grows, the difference between cdf and ecdf becomes lower.
+
+**Markov:**
+
+$$
+E(S) = n/mu = n/86289582\\
+P(S<8*10^8) = 1 - P(S \geq 8*10^8) \leq 0.95 = n/86289582 \\ n\leq81975102,9\approx81975102
+$$
+
+```{r}
+n <- 81975102
+
+mu <- mean(sample_means)    
+sigma <- sqrt(var(sample_means))
+xlims <- c(mu-3*sigma,mu+3*sigma)
+Fs <- ecdf(sample_means)
+plot(Fs, 
+     xlim = xlims, 
+     ylim = c(0,1),
+     col = "blue",
+     lwd = 1,
+     main = "Comparison of ecdf and cdf")
+curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
+```
+
+**Chernoff:**
+
+$$
+P(S\leq8*10^8) = 1 - P(S\geq8*10^8)\leq \dfrac{E(e^{t*S})}{e^{t*8*10^8}} = \dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}} = \\
+\text{Find } min(\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}}):\\
+(\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}})' = \dfrac{n*mu^{n}*(mu-t)^{n-1}-(mu^2-mu*t)^{n}}{(mu-t)^{2*n}*e^{t*8*10^8}} = 0 \\ n*mu^{n}*(mu-t)^{n-1} = (mu^2-mu*t)^{n} \\ n*86289582^{n}*(86289582-t)^{n-1} = (86289582^2-86289582*t)^{n} \\ t=mu-n\\ \text{then }
+\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}} = \dfrac{(\dfrac{mu}{n})^{n}}{e^{(mu-n)*8*10^8}} \geq 0.95 \\
+$$
+**CLT:**
+
+$$P(\dfrac{S_{n}-\dfrac{n}{mu}}{\dfrac{\sqrt n}{mu}}\ge{\dfrac{1-\dfrac{n}{mu}}{\sqrt n}}mu) \\ \phi{(mu*\sqrt n - \sqrt n)} \geq 0.95 \\\phi{(\sqrt n * (86289582 - 1))}\geq0.95\\ 86289581 * \sqrt n \geq 1-\phi{(0.95)} \\ N\leq $$
+
+```{r}
+n <- 9
+decays <- rep(0, K)
+
+for (i in 1:K) {
+
+  decays[i] <- sum(rpois(n, lambda = mu1))
+
+}
+
+prob <- length(decays[decays<8e8]) / length(decays)
+
+prob
+```
 
 ### Task 3.
 
@@ -232,26 +379,53 @@ curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
 
 #### One of the devices to measure radioactivity level at a given location is the Geiger counter. When the radioactive level is almost constant, the time between two consecutive clicks of the Geiger counter is an exponentially distributed random variable with parameter $\nu_1 = \mathtt{team\,id\,number} + 10$. Denote by $X_k$ the random time between the $(k-1)^{\mathrm{st}}$ and $k^{\mathrm{th}}$ click of the counter.
 
-1.  Show that the distribution of the sample means of $X_1, X_2,\dots,X_n$ gets very close to a normal one (which one?) as $n$ becomes large. To this end,
-    -   simulate the realizations $x_1,x_2,\dots,x_n$ of the \textbf{r.v.} $X_i$ and calculate the sample mean $s=\overline{\mathbf{x}}$;\
-    -   repeat this $K$ times to get the sample $\mathbf{s}=(s_1,\dots,s_K)$ of means and then the \emph{empirical cumulative distribution} function $F_{\mathbf{s}}$ of $\mathbf{s}$;\
-    -   identify $\mu$ and $\sigma^2$ such that the \textbf{c.d.f.} of $\mathscr{N}(\mu,\sigma^2)$ is close to the \textbf{e.c.d.f.} $F_{\mathbf{s}}$ of and plot both \textbf{c.d.f.}'s on one graph to visualize their proximity;\
-    -   calculate the maximal difference between the two \textbf{c.d.f.}'s;\
-    -   consider cases $n = 5$, $n = 10$, $n=50$ and comment on the results.
-2.  The place can be considered safe when the number of clicks in one minute does not exceed $100$. It is known that the parameter $\nu$ of the resulting exponential distribution is proportional to the number $N$ of the radioactive samples, i.e., $\nu = \nu_1*N$, where $\nu_1$ is the parameter for one sample. Determine the maximal number of radioactive samples that can be stored in that place so that, with probability $0.95$, the place is identified as safe. To do this,
-    -   express the event of interest in terms of the $\textbf{r.v.}$ $S:= X_1 + \cdots + X_{100}$;
+1.  Show that the distribution of the sample means of
+    $X_1, X_2,\dots,X_n$ gets very close to a normal one (which one?) as
+    $n$ becomes large. To this end,
+    -   simulate the realizations $x_1,x_2,\dots,x_n$ of the
+        \textbf{r.v.} $X_i$ and calculate the sample mean
+        $s=\overline{\mathbf{x}}$;\
+    -   repeat this $K$ times to get the sample
+        $\mathbf{s}=(s_1,\dots,s_K)$ of means and then the
+        \emph{empirical cumulative distribution} function
+        $F_{\mathbf{s}}$ of $\mathbf{s}$;\
+    -   identify $\mu$ and $\sigma^2$ such that the \textbf{c.d.f.} of
+        $\mathscr{N}(\mu,\sigma^2)$ is close to the \textbf{e.c.d.f.}
+        $F_{\mathbf{s}}$ of and plot both \textbf{c.d.f.}'s on one graph
+        to visualize their proximity;\
+    -   calculate the maximal difference between the two
+        \textbf{c.d.f.}'s;\
+    -   consider cases $n = 5$, $n = 10$, $n=50$ and comment on the
+        results.
+2.  The place can be considered safe when the number of clicks in one
+    minute does not exceed $100$. It is known that the parameter $\nu$
+    of the resulting exponential distribution is proportional to the
+    number $N$ of the radioactive samples, i.e., $\nu = \nu_1*N$, where
+    $\nu_1$ is the parameter for one sample. Determine the maximal
+    number of radioactive samples that can be stored in that place so
+    that, with probability $0.95$, the place is identified as safe. To
+    do this,
+    -   express the event of interest in terms of the $\textbf{r.v.}$
+        $S:= X_1 + \cdots + X_{100}$;
 
         S - time of 100 clicks, S \> 60\
 
-    -   obtain the theoretical bounds on $N$ using the Markov inequality, Chernoff bound and Central Limit Theorem and compare the results;
+    -   obtain the theoretical bounds on $N$ using the Markov
+        inequality, Chernoff bound and Central Limit Theorem and compare
+        the results;
 
         -   $$P(\dfrac{S-\dfrac{100}{37*N}}{\dfrac{10}{37*N}}\leq{\dfrac{1-\dfrac{100}{37*N}}{10}}37N) -> \phi{(3.7N-10)} \geq 0.95 -> 3,7N-10 \geq 1- \phi{(0.95)} -> N\geq2,74894 $$\
 
-    -   with the predicted $N$ and thus $\nu$, simulate the realization $x_1,x_2,\dots,x_{100}$ of the $X_i$ and of the sum $S = X_1 + \cdots + X_{100}$;\
+    -   with the predicted $N$ and thus $\nu$, simulate the realization
+        $x_1,x_2,\dots,x_{100}$ of the $X_i$ and of the sum
+        $S = X_1 + \cdots + X_{100}$;\
 
-    -   repeat this $K$ times to get the sample $\mathbf{s}=(s_1,\dots,s_K)$ of total times until the $100^{\mathrm{th}}$ click;\
+    -   repeat this $K$ times to get the sample
+        $\mathbf{s}=(s_1,\dots,s_K)$ of total times until the
+        $100^{\mathrm{th}}$ click;\
 
-    -   estimate the probability that the location is identified as safe and compare to the desired level $0.95$
+    -   estimate the probability that the location is identified as safe
+        and compare to the desired level $0.95$
 
 #### Generate samples an sample means:
 
@@ -266,7 +440,7 @@ sample_means2 <- colMeans(matrix(rexp(n2*K, rate = nu1), nrow=n))
 sample_means3 <- colMeans(matrix(rexp(n3*K, rate = nu1), nrow=n))
 ```
 
-#### Calculate the parameters of the stadard normal approximation
+#### Calculate the parameters of the standard normal approximation
 
 ```{r}
 mu1 <- mean(sample_means1)
@@ -321,7 +495,8 @@ print("Max difference:")
 max(abs(ecdf(sample_means3)(x)-pnorm(x, mean = mu3, sd = sigma3)))
 ```
 
-Results: as we can see ecdf and cdf become closer(their difference becomes smaller) as n becomes larger.
+Results: as we can see ecdf and cdf become closer(their difference
+becomes smaller) as n becomes larger.
 
 **Markov:**
 
@@ -389,8 +564,11 @@ prob <- length(clicks[clicks>1]) / length(clicks)
 prob
 ```
 
-*Comment*: as one can see, probabilities can be bounded using different approximations. We used Markov inequality, Chernoff bound and Central Limit Theorem. We can conclude that Chernoff and CLT gives us more precise bounds. But all of them give quite close results, which are satisfy desired probability.
-
+*Comment*: as one can see, probabilities can be bounded using different
+approximations. We used Markov inequality, Chernoff bound and Central
+Limit Theorem. We can conclude that Chernoff and CLT gives us more
+precise bounds. But all of them give quite close results, which are
+satisfy desired probability.
 
 ```{r}
 clicks <- rep(0, K)
@@ -401,5 +579,9 @@ prob <- length(clicks[clicks>1]) / length(clicks)
 prob
 ```
 
-*Comment*: as one can see, probabilities can be bounded using different approximations. We used Markov inequality, Chernoff bound and Central Limit Theorem. We can conclude that Chernoff and CLT gives us more precise bounds. But all of them give quite close results, which are satisfy desired probability.
->>>>>>> a6a1dccea19815ec4ea4f0c327eac2d33dfb77b8
+*Comment*: as one can see, probabilities can be bounded using different
+approximations. We used Markov inequality, Chernoff bound and Central
+Limit Theorem. We can conclude that Chernoff and CLT gives us more
+precise bounds. But all of them give quite close results, which are
+satisfy desired probability. \>\>\>\>\>\>\>
+a6a1dccea19815ec4ea4f0c327eac2d33dfb77b8
