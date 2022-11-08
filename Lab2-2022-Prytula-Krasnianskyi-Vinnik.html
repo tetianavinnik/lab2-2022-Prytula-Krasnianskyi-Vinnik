@@ -1926,12 +1926,12 @@ radiotherapy) with half-life period <span class="math inline">\(T =
 <strong>i.i.d. r.v.</strong>’s counting the number of decays in sample
 <span class="math inline">\(i\)</span> in one second.</h4>
 <ol style="list-style-type: decimal">
-<li>Specify the parameter of the Poisson distribution of <span class="math inline">\(X_i\)</span> (you’ll need the atomic mass of
+<li><p>Specify the parameter of the Poisson distribution of <span class="math inline">\(X_i\)</span> (you’ll need the atomic mass of
 <em>Cesium-137</em>)<br />
-</li>
-<li>Show that the distribution of the sample means of <span class="math inline">\(X_1,\dots,X_n\)</span> gets very close to a normal
+</p></li>
+<li><p>Show that the distribution of the sample means of <span class="math inline">\(X_1,\dots,X_n\)</span> gets very close to a normal
 one as <span class="math inline">\(n\)</span> becomes large and identify
-that normal distribution. To this end,
+that normal distribution. To this end,</p>
 <ul>
 <li>simulate the realization <span class="math inline">\(x_1,x_2,\dots,x_n\)</span> of the <span class="math inline">\(X_i\)</span> and calculate the sample mean <span class="math inline">\(s=\overline{\mathbf{x}}\)</span>;</li>
 <li>repeat this <span class="math inline">\(K\)</span> times to get the
@@ -1945,9 +1945,9 @@ the proper scales!);</li>
 <li>consider cases <span class="math inline">\(n = 5\)</span>, <span class="math inline">\(n = 10\)</span>, <span class="math inline">\(n=50\)</span> and comment on the results.<br />
 </li>
 </ul></li>
-<li>Calculate the largest possible value of <span class="math inline">\(n\)</span>, for which the total number of decays
+<li><p>Calculate the largest possible value of <span class="math inline">\(n\)</span>, for which the total number of decays
 in one second is less than <span class="math inline">\(8 \times
-10^8\)</span> with probability at least <span class="math inline">\(0.95\)</span>. To this end,
+10^8\)</span> with probability at least <span class="math inline">\(0.95\)</span>. To this end,</p>
 <ul>
 <li>obtain the theoretical bound on <span class="math inline">\(n\)</span> using Markov inequality, Chernoff bound
 and Central Limit Theorem, and compare the results;<br />
@@ -1960,15 +1960,15 @@ of sums;</li>
 critical value (<span class="math inline">\(8 \times 10^8\)</span>) and
 calculate the empirical probability; comment whether it is close to the
 desired level <span class="math inline">\(0.95\)</span></li>
-</ul></li>
-</ol>
+</ul>
 <pre class="r"><code>T_hl &lt;- 949864255
 lambda &lt;- log(2)/T_hl
 N &lt;- 1.18248175182e17
 mu1 &lt;- N * lambda
 K &lt;- 1e3
 n &lt;- 5
-sample_means &lt;- colMeans(matrix(rpois(n*K, lambda = mu1), nrow=n))</code></pre>
+sample_means &lt;- colMeans(matrix(rpois(n*K, lambda = mu1), nrow=n))</code></pre></li>
+</ol>
 </div>
 <div id="next-calculate-the-parameters-of-the-standard-normal-approximation" class="section level4">
 <h4>Next, calculate the parameters of the standard normal
@@ -2040,7 +2040,7 @@ t=mu-n\\ \text{then }
 <p><span class="math display">\[P(\dfrac{S_{n}-\dfrac{n}{mu}}{\dfrac{\sqrt
 n}{mu}}\ge{\dfrac{1-\dfrac{n}{mu}}{\sqrt n}}mu) \\ \phi{(mu*\sqrt n -
 \sqrt n)} \geq 0.95 \\\phi{(\sqrt n * (86289582 - 1))}\geq0.95\\
-86289581 * \sqrt n \geq 1-\phi{(0.95)} \\ N\leq \]</span></p>
+86289581 * \sqrt n \geq 1-\phi{(0.95)} \]</span></p>
 <pre class="r"><code>n &lt;- 9
 decays &lt;- rep(0, K)
 

@@ -243,9 +243,11 @@ approaches the one we derived theoretically
 
 1.  Specify the parameter of the Poisson distribution of $X_i$ (you'll
     need the atomic mass of *Cesium-137*)\
+
 2.  Show that the distribution of the sample means of $X_1,\dots,X_n$
     gets very close to a normal one as $n$ becomes large and identify
     that normal distribution. To this end,
+
     -   simulate the realization $x_1,x_2,\dots,x_n$ of the $X_i$ and
         calculate the sample mean $s=\overline{\mathbf{x}}$;
     -   repeat this $K$ times to get the sample
@@ -260,9 +262,11 @@ approaches the one we derived theoretically
         \textbf{c.d.f.}'s;
     -   consider cases $n = 5$, $n = 10$, $n=50$ and comment on the
         results.\
+
 3.  Calculate the largest possible value of $n$, for which the total
     number of decays in one second is less than $8 \times 10^8$ with
     probability at least $0.95$. To this end,
+
     -   obtain the theoretical bound on $n$ using Markov inequality,
         Chernoff bound and Central Limit Theorem, and compare the
         results;\
@@ -274,15 +278,16 @@ approaches the one we derived theoretically
         than critical value ($8 \times 10^8$) and calculate the
         empirical probability; comment whether it is close to the
         desired level $0.95$
-```{r}
-T_hl <- 949864255
-lambda <- log(2)/T_hl
-N <- 1.18248175182e17
-mu1 <- N * lambda
-K <- 1e3
-n <- 5
-sample_means <- colMeans(matrix(rpois(n*K, lambda = mu1), nrow=n))
-```
+
+    ```{r}
+    T_hl <- 949864255
+    lambda <- log(2)/T_hl
+    N <- 1.18248175182e17
+    mu1 <- N * lambda
+    K <- 1e3
+    n <- 5
+    sample_means <- colMeans(matrix(rpois(n*K, lambda = mu1), nrow=n))
+    ```
 
 #### Next, calculate the parameters of the standard normal approximation
 
@@ -353,10 +358,9 @@ P(S\leq8*10^8) = 1 - P(S\geq8*10^8)\leq \dfrac{E(e^{t*S})}{e^{t*8*10^8}} = \dfra
 \text{Find } min(\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}}):\\
 (\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}})' = \dfrac{n*mu^{n}*(mu-t)^{n-1}-(mu^2-mu*t)^{n}}{(mu-t)^{2*n}*e^{t*8*10^8}} = 0 \\ n*mu^{n}*(mu-t)^{n-1} = (mu^2-mu*t)^{n} \\ n*86289582^{n}*(86289582-t)^{n-1} = (86289582^2-86289582*t)^{n} \\ t=mu-n\\ \text{then }
 \dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}} = \dfrac{(\dfrac{mu}{n})^{n}}{e^{(mu-n)*8*10^8}} \geq 0.95 \\
-$$
-**CLT:**
+$$ **CLT:**
 
-$$P(\dfrac{S_{n}-\dfrac{n}{mu}}{\dfrac{\sqrt n}{mu}}\ge{\dfrac{1-\dfrac{n}{mu}}{\sqrt n}}mu) \\ \phi{(mu*\sqrt n - \sqrt n)} \geq 0.95 \\\phi{(\sqrt n * (86289582 - 1))}\geq0.95\\ 86289581 * \sqrt n \geq 1-\phi{(0.95)} \\ N\leq $$
+$$P(\dfrac{S_{n}-\dfrac{n}{mu}}{\dfrac{\sqrt n}{mu}}\ge{\dfrac{1-\dfrac{n}{mu}}{\sqrt n}}mu) \\ \phi{(mu*\sqrt n - \sqrt n)} \geq 0.95 \\\phi{(\sqrt n * (86289582 - 1))}\geq0.95\\ 86289581 * \sqrt n \geq 1-\phi{(0.95)} $$
 
 ```{r}
 n <- 9
