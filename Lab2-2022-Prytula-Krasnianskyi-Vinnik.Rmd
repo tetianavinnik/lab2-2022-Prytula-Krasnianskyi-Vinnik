@@ -293,7 +293,7 @@ approaches the one we derived theoretically
 
 ```{r}
 mu <- mean(sample_means)    
-sigma <- sqrt(var(sample_means))
+sigma <- sd(sample_means)
 ```
 
 #### We can now plot ecdf and cdf
@@ -351,14 +351,21 @@ plot(Fs,
 curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
 ```
 
+```{r}
+print("Max difference:")
+x <- seq(min(sample_means), max(sample_means), by = .01)
+max(abs(ecdf(sample_means)(x)-pnorm(x, mean = mu, sd = sigma)))
+```
+
 **Chernoff:**
 
 $$
-P(S\leq8*10^8) = 1 - P(S\geq8*10^8)\leq \dfrac{E(e^{t*S})}{e^{t*8*10^8}} = \dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}} = \\
-\text{Find } min(\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}}):\\
-(\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}})' = \dfrac{n*mu^{n}*(mu-t)^{n-1}-(mu^2-mu*t)^{n}}{(mu-t)^{2*n}*e^{t*8*10^8}} = 0 \\ n*mu^{n}*(mu-t)^{n-1} = (mu^2-mu*t)^{n} \\ n*86289582^{n}*(86289582-t)^{n-1} = (86289582^2-86289582*t)^{n} \\ t=mu-n\\ \text{then }
-\dfrac{(\dfrac{mu}{mu-t})^{n}}{e^{t*8*10^8}} = \dfrac{(\dfrac{mu}{n})^{n}}{e^{(mu-n)*8*10^8}} \geq 0.95 \\
-$$ **CLT:**
+P(S\leq8*10^8) = 1 - P(S\geq8*10^8)\leq \dfrac{E(e^{t*S})}{e^{t*8*10^8}} = \dfrac{M_X(S)}{e^{t*8*10^8}}= \dfrac{e^{mu*(e^t-1)}}{e^{t*8*10^8}} = \\
+\text{Find } min(\dfrac{e^{mu*(e^t-1)}}{e^{t*8*10^8}}):\\
+(\dfrac{e^{mu*(e^t-1)}}{e^{t*8*10^8}})' = mu*e^{mu*e^t-m-8*10^8+t}-8*10^8*e^{mu*e^t-m-8*10^8} = 0 \\ \text{then }
+\dfrac{e^{mu*(e^t-1)}}{e^{t*8*10^8}} \geq 0.95 \\
+$$
+**CLT:**
 
 $$P(\dfrac{S_{n}-\dfrac{n}{mu}}{\dfrac{\sqrt n}{mu}}\ge{\dfrac{1-\dfrac{n}{mu}}{\sqrt n}}mu) \\ \phi{(mu*\sqrt n - \sqrt n)} \geq 0.95 \\\phi{(\sqrt n * (86289582 - 1))}\geq0.95\\ 86289581 * \sqrt n \geq 1-\phi{(0.95)} $$
 
